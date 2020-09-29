@@ -1,0 +1,76 @@
+I agree to take this exam in a manner that is consistent with University College Cork’s examregulations, plagiarism policy and Code of Honour. I will take the exam without help from othersand without helping others.
+
+1. 
+form_data = FieldStorage()
+lect_date_input = form_data.getfirst("lect_date")
+try:
+    valid_date = strptime(lect_date, '%Y-%m-%d')
+    connection = db.connect('my_server', 'me', 'my_password', 'my_db')
+    cursor = connection.cursor(db.cursors.DictCursor)
+
+    attendance_input = form_data.getvalue("student_ids")
+    for item in attendance_input:
+        cursor.execute("""Select * from students 
+                            WHERE student_id = %s""", (item))
+            if cursor.rowcount<1:
+                outcome="<p>Error: student not in database</p>"
+            else:
+                cursor.execute("""Select * from attendance 
+                        WHERE lect_date = %s and student_id = %s""", (lect_date, item))
+                if cursor.rowcount=0:
+                    cursor.execute("""Insert into attendance (lect_date, student_id) values (%s, %d)""", (lect_date_input, item))
+                    outcome = "Success"
+                else:
+                    outcome = "<p>Error: student already in attendance database</p>"
+
+except Exception as e:
+    outcome = "<p>Error: We are so sorry, there has been an error try again later</p>"
+connection.commit()
+cursor.close()
+connection.close()
+
+
+2.
+document.addEventListener("DOMContentLoaded", init, false);
+
+var bill_num;
+var tip_per;
+var tip;
+var check_valid;
+
+function init() {
+    document.addEventListener("submit", calculate(), false);
+}
+
+function calculate() {
+    bill_num = document.getElementById("bill").value;
+    check_valid = check_for_pos_int(bill_num)
+    if (check_valid = "") {
+        if (document.getElementById('small').checked) {
+            tip_per = 0.10
+        } else {
+            tip_per = 0.15
+        }
+        tip = check_for_pos_int(bill_num).number
+        tip = tip * tip_per
+        tip = (Math.round(tip * 100) / 100).toFixed(2);
+        document.getElementById("tip").innerHTML = tip;
+    } else {
+        document.getElementById("message").innerHTML = check_valid;
+    }
+}
+
+function check_for_pos_int(text) {
+    let trimmed_text = text.trim();
+    if (trimmed_text === "") {
+        return "The bill must be a whole number greater than 0";
+    }
+    let number = ~~Number(trimmed_text);
+    if (String(number) !== trimmed_text) {
+        return "The bill must be a whole number greater than 0";
+    }
+    if (number < 0) {
+        return "The bill must be a whole number greater than 0";
+    }
+    return "";
+}
