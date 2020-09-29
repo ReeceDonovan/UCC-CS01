@@ -1,0 +1,14 @@
+org 50
+
+DB FA
+DB 0A
+DB B6
+DB 9E
+DB 4E
+DB DC
+DB FC
+DB 8A
+DB FE
+DB CE
+
+end
